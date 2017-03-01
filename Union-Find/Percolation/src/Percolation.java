@@ -87,14 +87,14 @@ public class Percolation {
         if (row <= 0 || row > this.n || col <= 0 || col > this.n) {
             throw new IndexOutOfBoundsException("Expected 0 < row <= " + this.n + " and  0 < col <= " + this.n);
         }
-        return this.field[col - 1 + (row - 1) * this.n] == 1;
+        return this.field[this.getId(row, col)] == 1;
     }
 
     public boolean isFull(int row, int col) {
         if (row <= 0 || row > this.n || col <= 0 || col > this.n) {
             throw new IndexOutOfBoundsException("Expected 0 < row <= " + this.n + " and  0 < col <= " + this.n);
         }
-        return this.field[col - 1 + (row - 1) * this.n] == 0;
+        return this.uf.connected(this.virtualTopSiteId, this.getId(row, col));
     }
 
     public int numberOfOpenSites() {
