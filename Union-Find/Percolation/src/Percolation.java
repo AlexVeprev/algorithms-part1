@@ -20,7 +20,7 @@ public class Percolation {
         this.virtualBottomSiteId = this.numOfSites + 1;
 
         this.field = new int[this.numOfSites];
-        for (int i = 0; i < n * n; i++) {
+        for (int i = 0; i < this.numOfSites; i++) {
             this.field[i] = 0;
         }
     }
@@ -38,14 +38,21 @@ public class Percolation {
         this.field[id] = 1;
 
         // Connect this site with opened neighbors.
-        if (id < this.n) {  // top row
+
+        if (this.numOfSites == 1) {
+            uf.union(id, this.virtualTopSiteId);
+            uf.union(id, this.virtualBottomSiteId);
+            return;
+        }
+
+        if (row == 1) {  // top row
             uf.union(id, this.virtualTopSiteId);
 
             if (this.isOpen(row + 1, col)) {
                 uf.union(id, this.getId(row + 1, col));
             }
         }
-        else if (id >= this.n * (this.n - 1)) {  // bottom row
+        else if (row == this.n) {  // bottom row
             uf.union(id, this.virtualBottomSiteId);
 
             if (this.isOpen(row - 1, col)) {
@@ -62,12 +69,12 @@ public class Percolation {
             }
         }
 
-        if (id == this.n * (row - 1)) { // left column
+        if (col == 1) { // left column
             if (this.isOpen(row, col + 1)) {
                 uf.union(id, this.getId(row, col + 1));
             }
         }
-        else if (id == this.n * row - 1) { // right column
+        else if (col == this.n) { // right column
             if (this.isOpen(row, col - 1)) {
                 uf.union(id, this.getId(row, col - 1));
             }
