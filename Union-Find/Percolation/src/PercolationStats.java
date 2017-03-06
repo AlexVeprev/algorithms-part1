@@ -18,27 +18,27 @@ public class PercolationStats {
             results[i] = (double) this.doPercolationExperiment(n) / (double) (n * n);
         }
 
-        this.mean = StdStats.mean(results);
-        this.stddev = StdStats.stddev(results);
+        mean = StdStats.mean(results);
+        stddev = StdStats.stddev(results);
 
-        this.confidenceLo = this.mean - this.stddev * 1.96 / Math.sqrt(trials);
-        this.confidenceHi = this.mean + this.stddev * 1.96 / Math.sqrt(trials);
+        confidenceLo = mean - stddev * 1.96 / Math.sqrt(trials);
+        confidenceHi = mean + stddev * 1.96 / Math.sqrt(trials);
     }
 
     public double mean() {
-        return this.mean;
+        return mean;
     }
 
     public double stddev() {
-        return this.stddev;
+        return stddev;
     }
 
     public double confidenceLo() {
-        return this.confidenceLo;
+        return confidenceLo;
     }
 
     public double confidenceHi() {
-        return this.confidenceHi;
+        return confidenceHi;
     }
 
     private int doPercolationExperiment(int n) {

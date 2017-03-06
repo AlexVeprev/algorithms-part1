@@ -1,6 +1,11 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
+    private static int BLOCKED_SITE = 0;
+    private static int OPEN_SITE = 1;
+    private static int FULL_SITE = 2;
+    private static boolean allowRecursion = false;
+
     private int n;
     private int numOfSites;
     private int virtualTopSiteId;
@@ -14,107 +19,170 @@ public class Percolation {
         }
 
         this.n = n;
-        this.numOfSites = n * n;
-        this.uf = new WeightedQuickUnionUF(this.numOfSites + 2);
-        this.virtualTopSiteId = this.numOfSites;
-        this.virtualBottomSiteId = this.numOfSites + 1;
+        numOfSites = n * n;
+        uf = new WeightedQuickUnionUF(numOfSites + 2);
+        virtualTopSiteId = numOfSites;
+        virtualBottomSiteId = numOfSites + 1;
 
-        this.field = new int[this.numOfSites];
-        for (int i = 0; i < this.numOfSites; i++) {
-            this.field[i] = 0;
+        field = new int[numOfSites];
+        for (int i = 0; i < numOfSites; i++) {
+            field[i] = BLOCKED_SITE;
         }
     }
 
     private int getId(int row, int col) {
-        return col - 1 + (row - 1) * this.n;
+        return col - 1 + (row - 1) * n;
+    }
+
+    private boolean isSiteValid(int row, int col) {
+        return row > 0 && row <= n && col > 0 && col <= n;
+    }
+
+    /**
+     * Make site full if any nearby is full.
+     * If the site is full then make full nearby sites recursively.
+     *
+     * @param row - site row;
+     * @param col - site column;
+     */
+    private void makeFull(int row, int col) {
+        int[] rowShifts = {0, 0, 1, -1};
+        int[] colShifts = {1, -1, 0, 0};
+        int neibRow;
+        int neibCol;
+
+        if (field[getId(row, col)] != FULL_SITE) {
+            for (int i = 0; i < rowShifts.length; i++) {
+                neibRow = row + rowShifts[i];
+                neibCol = col + colShifts[i];
+
+                if (isSiteValid(neibRow, neibCol) && isFull(neibRow, neibCol)) {
+                    field[getId(row, col)] = FULL_SITE;
+                    break;
+                }
+            }
+
+            if (field[getId(row, col)] != FULL_SITE) {
+                return;
+            }
+        }
+
+        for (int i = 0; i < rowShifts.length; i++) {
+            neibRow = row + rowShifts[i];
+            neibCol = col + colShifts[i];
+
+            if (isSiteValid(neibRow, neibCol) && isOpen(neibRow, neibCol) && !isFull(neibRow, neibCol)) {
+                field[getId(neibRow, neibCol)] = FULL_SITE;
+                makeFull(neibRow, neibCol);
+            }
+        }
     }
 
     public void open(int row, int col) {
-        if (row <= 0 || row > this.n || col <= 0 || col > this.n) {
-            throw new IndexOutOfBoundsException("Expected 0 < row <= " + this.n + " and  0 < col <= " + this.n);
+        if (!isSiteValid(row, col)) {
+            throw new IndexOutOfBoundsException();
         }
 
-        int id = this.getId(row, col);
-        this.field[id] = 1;
+        if (isOpen(row, col)) {
+            return;
+        }
+
+        int id = getId(row, col);
+        field[id] = OPEN_SITE;
 
         // Connect this site with opened neighbors.
 
-        if (this.numOfSites == 1) {
-            uf.union(id, this.virtualTopSiteId);
-            uf.union(id, this.virtualBottomSiteId);
+        if (numOfSites == 1) {
+            uf.union(id, virtualTopSiteId);
+            uf.union(id, virtualBottomSiteId);
+            field[id] = FULL_SITE;
             return;
         }
 
         if (row == 1) {  // top row
-            uf.union(id, this.virtualTopSiteId);
+            uf.union(id, virtualTopSiteId);
+            field[id] = FULL_SITE;
 
-            if (this.isOpen(row + 1, col)) {
-                uf.union(id, this.getId(row + 1, col));
+            if (isOpen(row + 1, col)) {
+                uf.union(id, getId(row + 1, col));
             }
         }
-        else if (row == this.n) {  // bottom row
-            uf.union(id, this.virtualBottomSiteId);
+        else if (row == n) {  // bottom row
+            uf.union(id, virtualBottomSiteId);
 
-            if (this.isOpen(row - 1, col)) {
-                uf.union(id, this.getId(row - 1, col));
+            if (isOpen(row - 1, col)) {
+                uf.union(id, getId(row - 1, col));
             }
         }
         else {  // middle rows
-            if (this.isOpen(row - 1, col)) {
-                uf.union(id, this.getId(row - 1, col));
+            if (isOpen(row - 1, col)) {
+                uf.union(id, getId(row - 1, col));
             }
 
-            if (this.isOpen(row + 1, col)) {
-                uf.union(id, this.getId(row + 1, col));
+            if (isOpen(row + 1, col)) {
+                uf.union(id, getId(row + 1, col));
             }
         }
 
         if (col == 1) { // left column
-            if (this.isOpen(row, col + 1)) {
-                uf.union(id, this.getId(row, col + 1));
+            if (isOpen(row, col + 1)) {
+                uf.union(id, getId(row, col + 1));
             }
         }
-        else if (col == this.n) { // right column
-            if (this.isOpen(row, col - 1)) {
-                uf.union(id, this.getId(row, col - 1));
+        else if (col == n) { // right column
+            if (isOpen(row, col - 1)) {
+                uf.union(id, getId(row, col - 1));
             }
         }
         else {  // middle columns
-            if (this.isOpen(row, col + 1)) {
-                uf.union(id, this.getId(row, col + 1));
+            if (isOpen(row, col + 1)) {
+                uf.union(id, getId(row, col + 1));
             }
 
-            if (this.isOpen(row, col - 1)) {
-                uf.union(id, this.getId(row, col - 1));
+            if (isOpen(row, col - 1)) {
+                uf.union(id, getId(row, col - 1));
             }
+        }
+
+        if (allowRecursion) {
+            makeFull(row, col);
         }
     }
 
     public boolean isOpen(int row, int col) {
-        if (row <= 0 || row > this.n || col <= 0 || col > this.n) {
-            throw new IndexOutOfBoundsException("Expected 0 < row <= " + this.n + " and  0 < col <= " + this.n);
+        if (!isSiteValid(row, col)) {
+            throw new IndexOutOfBoundsException();
         }
-        return this.field[this.getId(row, col)] == 1;
+
+        return field[getId(row, col)] == OPEN_SITE || field[getId(row, col)] == FULL_SITE;
     }
 
     public boolean isFull(int row, int col) {
-        if (row <= 0 || row > this.n || col <= 0 || col > this.n) {
-            throw new IndexOutOfBoundsException("Expected 0 < row <= " + this.n + " and  0 < col <= " + this.n);
+        if (!isSiteValid(row, col)) {
+            throw new IndexOutOfBoundsException();
         }
-        return this.uf.connected(this.virtualTopSiteId, this.getId(row, col));
+
+        if (allowRecursion) {
+            return field[getId(row, col)] == FULL_SITE;
+        }
+        else {
+            return uf.connected(getId(row, col), virtualTopSiteId);
+        }
     }
 
     public int numberOfOpenSites() {
         int sum = 0;
 
-        for (int i = 0; i < this.numOfSites; i++) {
-            sum += this.field[i];
+        for (int i = 0; i < numOfSites; i++) {
+            if (field[i] == FULL_SITE || field[i] == OPEN_SITE) {
+                sum++;
+            }
         }
 
         return sum;
     }
 
     public boolean percolates() {
-        return this.uf.connected(this.virtualTopSiteId, this.virtualBottomSiteId);
+        return uf.connected(virtualTopSiteId, virtualBottomSiteId);
     }
 }
