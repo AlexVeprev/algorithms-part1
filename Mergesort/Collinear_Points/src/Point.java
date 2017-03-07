@@ -10,6 +10,7 @@
 
 import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Point implements Comparable<Point> {
 
@@ -59,7 +60,22 @@ public class Point implements Comparable<Point> {
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
-        /* YOUR CODE HERE */
+        // Degenerate
+        if (x == that.x && y == that.y) {
+            return Double.NEGATIVE_INFINITY;
+        }
+
+        // Horizontal
+        if (y == that.y) {
+            return +0.0;
+        }
+
+        // Vertical
+        if (x == that.x) {
+            return Double.POSITIVE_INFINITY;
+        }
+
+        return ((double)that.y - y) / (that.x - x);
     }
 
     /**
@@ -76,7 +92,15 @@ public class Point implements Comparable<Point> {
      */
     @Override
     public int compareTo(Point that) {
-        /* YOUR CODE HERE */
+        if (y < that.y || y == that.y && x < that.x) {
+            return -1;
+        }
+
+        if (y == that.y && x == that.x) {
+            return 0;
+        }
+
+        return 1;
     }
 
     /**
@@ -107,6 +131,28 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) {
-        /* YOUR CODE HERE */
+        Point p0_0 = new Point(0, 0);
+        Point p1_1 = new Point(1, 1);
+        Point p1_0 = new Point(1, 0);
+        Point p0_1 = new Point(0, 1);
+        Point p3_5 = new Point(3, 5);
+        Point pn3_n5 = new Point(-3, -5);
+        Point pn3_5 = new Point(-3, 5);
+
+        StdOut.println("p0_0.slopeTo(p0_0) == Double.NEGATIVE_INFINITY : " + (p0_0.slopeTo(p0_0) == Double.NEGATIVE_INFINITY) + " " + p0_0.slopeTo(p0_0));
+        StdOut.println("p0_0.slopeTo(p1_1) == 1.0                      : " + (p0_0.slopeTo(p1_1) == 1.0) + " " + p0_0.slopeTo(p1_1));
+        StdOut.println("p0_0.slopeTo(p1_0) == +0.0                     : " + (p0_0.slopeTo(p1_0) == +0.0) + " " + p0_0.slopeTo(p1_0));
+        StdOut.println("p0_0.slopeTo(p0_1) == Double.POSITIVE_INFINITY : " + (p0_0.slopeTo(p0_1) == Double.POSITIVE_INFINITY) + " " + p0_0.slopeTo(p0_1));
+        StdOut.println("p0_0.slopeTo(p3_5) == 5.0 / 3                  : " + (p0_0.slopeTo(p3_5) == 5.0 / 3) + " " + p0_0.slopeTo(p3_5));
+        StdOut.println("p1_1.slopeTo(p3_5) == 2.0                      : " + (p1_1.slopeTo(p3_5) == 2.0) + " " + p1_1.slopeTo(p3_5));
+        StdOut.println("p1_1.slopeTo(pn3_n5) == 1.5                    : " + (p1_1.slopeTo(pn3_n5) == 1.5) + " " + p1_1.slopeTo(pn3_n5));
+        StdOut.println("p1_1.slopeTo(pn3_5) == -1.0                    : " + (p1_1.slopeTo(pn3_5) == -1.0) + " " + p1_1.slopeTo(pn3_5));
+        StdOut.println("---------");
+        StdOut.println("p0_0.compareTo(p0_0) == 0  : " + (p0_0.compareTo(p0_0) == 0));
+        StdOut.println("p0_0.compareTo(p1_1) < 0   : " + (p0_0.compareTo(p1_1) < 0));
+        StdOut.println("p1_1.compareTo(p0_0) > 0   : " + (p1_1.compareTo(p0_0) > 0));
+        StdOut.println("p0_0.compareTo(p1_0) < 0   : " + (p0_0.compareTo(p1_0) < 0));
+        StdOut.println("p3_5.compareTo(pn3_5) > 0  : " + (p3_5.compareTo(pn3_5) > 0));
+        StdOut.println("p1_1.compareTo(pn3_5) < 0  : " + (p1_1.compareTo(pn3_5) < 0));
     }
 }
