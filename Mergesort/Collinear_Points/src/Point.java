@@ -10,7 +10,6 @@
 
 import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdOut;
 
 public class Point implements Comparable<Point> {
 
@@ -110,9 +109,23 @@ public class Point implements Comparable<Point> {
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        /* YOUR CODE HERE */
+        return new SlopeOrder();
     }
 
+    private class SlopeOrder implements Comparator<Point> {
+        @Override
+        public int compare(Point p1, Point p2) {
+            if (slopeTo(p1) < slopeTo(p2)) {
+                return -1;
+            }
+
+            if (slopeTo(p1) > slopeTo(p2)) {
+                return 1;
+            }
+
+            return 0;
+        }
+    }
 
     /**
      * Returns a string representation of this point.
@@ -131,6 +144,7 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) {
+        /*
         Point p0_0 = new Point(0, 0);
         Point _p0_0 = new Point(0, 0);
         Point p1_1 = new Point(1, 1);
@@ -149,12 +163,12 @@ public class Point implements Comparable<Point> {
         StdOut.println("p1_1.slopeTo(pn3_n5) == 1.5                     : " + (p1_1.slopeTo(pn3_n5) == 1.5) + " " + p1_1.slopeTo(pn3_n5));
         StdOut.println("p1_1.slopeTo(pn3_5) == -1.0                     : " + (p1_1.slopeTo(pn3_5) == -1.0) + " " + p1_1.slopeTo(pn3_5));
         StdOut.println("---------");
-        StdOut.println("p0_0.compareTo(p0_0) == 0  : " + (p0_0.compareTo(p0_0) == 0));
         StdOut.println("p0_0.compareTo(_p0_0) == 0 : " + (p0_0.compareTo(_p0_0) == 0));
         StdOut.println("p0_0.compareTo(p1_1) < 0   : " + (p0_0.compareTo(p1_1) < 0));
         StdOut.println("p1_1.compareTo(p0_0) > 0   : " + (p1_1.compareTo(p0_0) > 0));
         StdOut.println("p0_0.compareTo(p1_0) < 0   : " + (p0_0.compareTo(p1_0) < 0));
         StdOut.println("p3_5.compareTo(pn3_5) > 0  : " + (p3_5.compareTo(pn3_5) > 0));
         StdOut.println("p1_1.compareTo(pn3_5) < 0  : " + (p1_1.compareTo(pn3_5) < 0));
+         */
     }
 }
