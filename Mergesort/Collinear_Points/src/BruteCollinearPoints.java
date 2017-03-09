@@ -1,31 +1,59 @@
-import edu.princeton.cs.algs4.StdOut;
+import java.util.Arrays;
 
 public class BruteCollinearPoints {
-    private Point[] points;
+    private Point[] arr;
     private int numOfSegments = 0;
-    private LineSegment[] segments = new LineSegment[1];
+    private LineSegment[] segments = new LineSegment[0];
 
-    private void newSegment(int[] pointIds) {
-        int minId = pointIds[0];
-        int maxId = pointIds[0];
+    public BruteCollinearPoints(Point[] points) {
+        arr = new Point[points.length];
 
-        for (int i : pointIds) {
-            if (points[i].compareTo(points[minId]) < 0) {
-                minId = i;
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null)
+                throw new NullPointerException();
+
+            if (Arrays.asList(arr).contains(points[i]))
+                throw new IllegalArgumentException();
+
+            arr[i] = points[i];
+        }
+
+        for (int i0 = 0; i0 < arr.length - 3; i0++) {
+            for (int i1 = i0 + 1; i1 < arr.length - 2; i1++) {
+                for (int i2 = i1 + 1; i2 < arr.length - 1; i2++) {
+                    if (arr[i0].slopeTo(arr[i1]) != arr[i0].slopeTo(arr[i2])) {
+                        continue;
+                    }
+
+                    for (int i3 = i2 + 1; i3 < arr.length; i3++) {
+                        if (arr[i0].slopeTo(arr[i1]) == arr[i0].slopeTo(arr[i3])) {
+                            newSegment(new Point[]{arr[i0], arr[i1], arr[i2], arr[i3]});
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void newSegment(Point[] points) {
+        Point minP = points[0];
+        Point maxP = points[0];
+
+        for (Point p : points) {
+            if (p.compareTo(minP) < 0) {
+                minP = p;
                 continue;
             }
 
-            if (points[i].compareTo(points[maxId]) > 0) {
-                maxId = i;
+            if (p.compareTo(maxP) > 0) {
+                maxP = p;
                 continue;
             }
         }
 
-        if (segments.length == numOfSegments) {
-            resizeLsArray(numOfSegments + 1);
-        }
+        resizeLsArray(numOfSegments + 1);
 
-        LineSegment ls = new LineSegment(points[minId], points[maxId]);
+        LineSegment ls = new LineSegment(minP, maxP);
         segments[numOfSegments++] = ls;
     }
 
@@ -39,31 +67,11 @@ public class BruteCollinearPoints {
         segments = newLsArray;
     }
 
-    public BruteCollinearPoints(Point[] points) {
-        this.points = points;
-
-        for (int i0 = 0; i0 < points.length - 3; i0++) {
-            for (int i1 = i0 + 1; i1 < points.length - 2; i1++) {
-                for (int i2 = i1 + 1; i2 < points.length - 1; i2++) {
-                    if (points[i0].slopeTo(points[i1]) != points[i0].slopeTo(points[i2])) {
-                        continue;
-                    }
-
-                    for (int i3 = i2 + 1; i3 < points.length; i3++) {
-                        if (points[i0].slopeTo(points[i1]) == points[i0].slopeTo(points[i3])) {
-                            newSegment(new int[]{i0, i1, i2, i3});
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public int numberOfSegments() {
         return numOfSegments;
     }
 
     public LineSegment[] segments() {
-        return segments;
+        return segments.clone();
     }
 }
