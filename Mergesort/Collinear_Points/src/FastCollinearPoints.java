@@ -1,9 +1,10 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class FastCollinearPoints {
     private Point[] arr;
-    private int numOfSegments = 0;
-    private LineSegment[] segments = new LineSegment[0];
+    private List<LineSegment> segments = new ArrayList<LineSegment>();
 
     public FastCollinearPoints(Point[] points) {
         arr = new Point[points.length];
@@ -22,52 +23,52 @@ public class FastCollinearPoints {
     }
 
     private void findSegments() {
-        for (int i = 0; i < arr.length - 3; i++) {
-            Arrays.sort(arr);
-            Arrays.sort(arr, i + 1, arr.length, arr[i].slopeOrder());
+        Arrays.sort(arr);
+        Point[] slopeSortedArr = arr.clone();
 
-            int collPoints = 2;
-            double currentSlope = arr[i].slopeTo(arr[i + 1]);
-            for (int j = i + 2; j < arr.length; j++) {
-                if (arr[i].slopeTo(arr[j]) == currentSlope) {
-                    collPoints++;
-                }
-                else {
-                    if (collPoints > 3) {
-                        LineSegment ls = new LineSegment(arr[i], arr[j - 1]);
-                        resizeLsArray(numOfSegments + 1);
-                        segments[numOfSegments++] = ls;
+        for (int i = 0; i < arr.length; i++) {
+            Arrays.sort(slopeSortedArr, arr[i].slopeOrder());
+
+            int wantedSlopeId = 0;
+            int max = wantedSlopeId;
+            int min = wantedSlopeId;
+
+            for (int j = wantedSlopeId; j < slopeSortedArr.length; j++) {
+                double wantedSlope = arr[i].slopeTo(slopeSortedArr[wantedSlopeId]);
+                double currentSlope = arr[i].slopeTo(slopeSortedArr[j]);
+
+                if (wantedSlope != currentSlope) {
+                    if (j - wantedSlopeId >= 3 && slopeSortedArr[min].compareTo(arr[i]) > 0) {
+                        LineSegment ls = new LineSegment(arr[i], slopeSortedArr[max]);
+                        segments.add(ls);
                     }
-                    currentSlope = arr[i].slopeTo(arr[j]);
-                    collPoints = 2;
+
+                    wantedSlopeId = max = min = j;
+                    continue;
+                }
+
+                if (slopeSortedArr[j].compareTo(slopeSortedArr[min]) < 0) {
+                    min = j;
+                }
+
+                if (slopeSortedArr[j].compareTo(slopeSortedArr[max]) > 0) {
+                    max = j;
                 }
             }
 
-            if (collPoints > 3) {
-                LineSegment ls = new LineSegment(arr[i], arr[arr.length - 1]);
-                resizeLsArray(numOfSegments + 1);
-                segments[numOfSegments++] = ls;
+            if (slopeSortedArr.length - wantedSlopeId >= 3  && slopeSortedArr[min].compareTo(arr[i]) > 0) {
+                LineSegment ls = new LineSegment(arr[i], slopeSortedArr[max]);
+                segments.add(ls);
             }
         }
     }
 
-    private void resizeLsArray(int size) {
-        LineSegment[] newLsArray = new LineSegment[size];
-
-        for (int i = 0; i < segments.length; i++) {
-            newLsArray[i] = segments[i];
-        }
-
-        segments = newLsArray;
-    }
 
     public int numberOfSegments() {
-        // the number of line segments
-        return numOfSegments;
+        return segments.size();
     }
 
     public LineSegment[] segments() {
-        // the line segments
-        return segments.clone();
+        return segments.toArray(new LineSegment[segments.size()]);
     }
 }
