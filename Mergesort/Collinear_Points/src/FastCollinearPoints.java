@@ -19,11 +19,8 @@ public class FastCollinearPoints {
             arr[i] = points[i];
         }
 
-        findSegments();
-    }
-
-    private void findSegments() {
         Arrays.sort(arr);
+
         Point[] slopeSortedArr = arr.clone();
 
         for (int i = 0; i < arr.length; i++) {
@@ -34,10 +31,7 @@ public class FastCollinearPoints {
             int min = wantedSlopeId;
 
             for (int j = wantedSlopeId; j < slopeSortedArr.length; j++) {
-                double wantedSlope = arr[i].slopeTo(slopeSortedArr[wantedSlopeId]);
-                double currentSlope = arr[i].slopeTo(slopeSortedArr[j]);
-
-                if (wantedSlope != currentSlope) {
+                if (arr[i].slopeTo(slopeSortedArr[wantedSlopeId]) != arr[i].slopeTo(slopeSortedArr[j])) {
                     if (j - wantedSlopeId >= 3 && slopeSortedArr[min].compareTo(arr[i]) > 0) {
                         LineSegment ls = new LineSegment(arr[i], slopeSortedArr[max]);
                         segments.add(ls);
@@ -47,13 +41,11 @@ public class FastCollinearPoints {
                     continue;
                 }
 
-                if (slopeSortedArr[j].compareTo(slopeSortedArr[min]) < 0) {
+                if (slopeSortedArr[j].compareTo(slopeSortedArr[min]) < 0)
                     min = j;
-                }
 
-                if (slopeSortedArr[j].compareTo(slopeSortedArr[max]) > 0) {
+                if (slopeSortedArr[j].compareTo(slopeSortedArr[max]) > 0)
                     max = j;
-                }
             }
 
             if (slopeSortedArr.length - wantedSlopeId >= 3  && slopeSortedArr[min].compareTo(arr[i]) > 0) {
@@ -62,7 +54,6 @@ public class FastCollinearPoints {
             }
         }
     }
-
 
     public int numberOfSegments() {
         return segments.size();
