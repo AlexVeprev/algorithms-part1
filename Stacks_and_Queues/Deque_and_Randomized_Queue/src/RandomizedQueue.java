@@ -23,44 +23,42 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     private void resize(int size) {
         Item[] newArray = (Item[]) new Object[size];
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size(); i++)
             newArray[i] = array[i];
-        }
 
         array = newArray;
     }
 
     public void enqueue(Item item) {
-        if (item == null) {
+        if (item == null)
             throw new NullPointerException();
-        }
 
-        if (size() == array.length) {
+        if (size() == array.length)
             resize(array.length * 2);
-        }
 
         array[++last] = item;
     }
 
     public Item dequeue() {
-        if (last < 0) {
+        if (last < 0)
             throw new NoSuchElementException();
-        }
 
-        if (size() < array.length / 4) {
+        if (size() < array.length / 4)
             resize(array.length / 2);
-        }
 
         int deqIx = StdRandom.uniform(size());
         exch(array, deqIx, last);
 
-        return array[last--];
+        Item itemToReturn = array[last];
+        array[last] = null;
+        last--;
+
+        return itemToReturn;
     }
 
     public Item sample() {
-        if (last < 0) {
+        if (last < 0)
             throw new NoSuchElementException();
-        }
 
         return array[StdRandom.uniform(size())];
     }
@@ -95,9 +93,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         @Override
         public Item next()
         {
-            if (!hasNext()) {
+            if (!hasNext())
                 throw new NoSuchElementException();
-            }
 
             returnIx = StdRandom.uniform(lastUnhandled + 1);
             exch(iterArray, returnIx, lastUnhandled);
@@ -120,49 +117,51 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         // Print samples.
-        for (int i = 0; i < numOfElements; i++) {
+        for (int i = 0; i < numOfElements; i++)
             StdOut.println("Sample " + (i + 1) + ": string=" + rqString.sample() + " | int=" + rqInt.sample());
-        }
 
         // Plane iterators.
         for (int i = 0; i < numOfElements; i++) {
             StdOut.print("Iterator " + (i + 1) + ": string ");
 
-            for (String x : rqString) {
+            for (String x : rqString)
                 StdOut.print(x + " ");
-            }
 
             StdOut.print("| int ");
 
-            for (Integer x : rqInt) {
+            for (Integer x : rqInt)
                 StdOut.print(x + " ");
-            }
+
             StdOut.println();
         }
 
         // Nested iterators.
         StringBuilder inner = new StringBuilder();
         StringBuilder outer = new StringBuilder();
+
         for (String x : rqString) {
-            for (String y : rqString) {
+            for (String y : rqString)
                 inner.append(y + " ");
-            }
+
             inner.append("| ");
             outer.append(x + " ");
         }
+
         StdOut.println("Nested iterators (string):");
         StdOut.println(" inner: " + inner);
         StdOut.println(" outer: " + outer);
 
         inner = new StringBuilder();
         outer = new StringBuilder();
+
         for (Integer x : rqInt) {
-            for (Integer y : rqInt) {
+            for (Integer y : rqInt)
                 inner.append(y + " ");
-            }
+
             inner.append("| ");
             outer.append(x + " ");
         }
+
         StdOut.println("Nested iterators (int):");
         StdOut.println(" inner: " + inner);
         StdOut.println(" outer: " + outer);
