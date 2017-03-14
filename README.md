@@ -2,7 +2,7 @@
 
 Book: [Algorithms, 4th Edition by Robert Sedgewick and Kevin Wayne](http://algs4.cs.princeton.edu/home/)
 
-**Programming assignments and solutionions**
+**Programming assignments and solutions**
 
 \#  | Assignment | Solution | Result | Comment
 --- | ---------- | -------- |:------:| -------
