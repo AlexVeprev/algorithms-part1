@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.StdRandom;
+
 public class Board {
     private final int[][] board;
     private final int dim;
@@ -57,11 +59,27 @@ public class Board {
 
         return true;
     }
-    /*
+
     public Board twin() {
-        // a board that is obtained by exchanging any pair of blocks
+        int rand1 = StdRandom.uniform(dim * dim);
+        int rand2 = StdRandom.uniform(dim * dim - 1);
+
+        if (rand1 == rand2)
+            rand2 = dim * dim - 1;
+
+        Board twin = new Board(board);
+
+        int j1 = rand1 % dim;
+        int i1 = (rand1 - j1) / dim;
+        int j2 = rand2 % dim;
+        int i2 = (rand2 - j2) / dim;
+
+        twin.board[i1][j1] = board[i2][j2];
+        twin.board[i2][j2] = board[i1][j1];
+
+        return twin;
     }
-     */
+
     @Override
     public boolean equals(Object y) {
         if (y == this)
@@ -136,5 +154,12 @@ public class Board {
         System.out.println(b1);
         System.out.println(b2);
         System.out.println(b3);
+
+        System.out.println("\nTwins:");
+        System.out.println("b1.twin()\n" + b1.twin());
+        System.out.println("b1.twin()\n" + b1.twin());
+        System.out.println("b1.twin()\n" + b1.twin());
+        System.out.println("b2.twin()\n" + b2.twin());
+        System.out.println("b3.twin()\n" + b3.twin());
     }
 }
