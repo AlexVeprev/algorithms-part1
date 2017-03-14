@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.princeton.cs.algs4.StdRandom;
-
 public class Board {
     private final int[][] board;
     private final int dim;
@@ -101,7 +99,11 @@ public class Board {
         if (getClass() != y.getClass())
             return false;
 
+
         Board anotherBoard = (Board) y;
+
+        if (dim != anotherBoard.dim)
+            return false;
 
         for (int i = 0; i < dim; i++)
             for (int j = 0; j < dim; j++)
@@ -119,6 +121,7 @@ public class Board {
             neighbor = new Board(board);
             neighbor.board[emptyI][emptyJ] = board[emptyI - 1][emptyJ];
             neighbor.board[emptyI - 1][emptyJ] = board[emptyI][emptyJ];
+            neighbor.emptyI = emptyI - 1;
             neighbors.add(neighbor);
         }
 
@@ -126,6 +129,7 @@ public class Board {
             neighbor = new Board(board);
             neighbor.board[emptyI][emptyJ] = board[emptyI + 1][emptyJ];
             neighbor.board[emptyI + 1][emptyJ] = board[emptyI][emptyJ];
+            neighbor.emptyI = emptyI + 1;
             neighbors.add(neighbor);
         }
 
@@ -133,6 +137,7 @@ public class Board {
             neighbor = new Board(board);
             neighbor.board[emptyI][emptyJ] = board[emptyI][emptyJ - 1];
             neighbor.board[emptyI][emptyJ - 1] = board[emptyI][emptyJ];
+            neighbor.emptyJ = emptyJ - 1;
             neighbors.add(neighbor);
         }
 
@@ -140,6 +145,7 @@ public class Board {
             neighbor = new Board(board);
             neighbor.board[emptyI][emptyJ] = board[emptyI][emptyJ + 1];
             neighbor.board[emptyI][emptyJ + 1] = board[emptyI][emptyJ];
+            neighbor.emptyJ = emptyJ + 1;
             neighbors.add(neighbor);
         }
 
@@ -174,6 +180,18 @@ public class Board {
             {1, 2, 3},
             {6, 0, 4},
             {7, 8, 5}});
+
+        Board b4 = new Board(new int[][] {
+            {1, 0, 3},
+            {6, 2, 4},
+            {7, 8, 5}});
+
+        System.out.println("\nNeighbors of b4.neighbors():");
+        for (Board n : b4.neighbors()) {
+            System.out.println("==========\nNeighbors of\n" + n + "--------");
+            for (Board nn : n.neighbors())
+                System.out.println(nn);
+        }
 
         System.out.println("b1.hamming() == 0: " + (b1.hamming() == 0));
         System.out.println("b2.hamming() == 8: " + (b2.hamming() == 8));
@@ -211,5 +229,6 @@ public class Board {
         for (Board n : b3.neighbors()) {
             System.out.println(n);
         }
+
     }
 }
