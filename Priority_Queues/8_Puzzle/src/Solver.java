@@ -17,8 +17,18 @@ public class Solver {
     }
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
 
     }
 
+    private class Node {
+        private Board currentBoard;
+        private Board previousBoard;
+        private int numOfMoves;
+
+        public Node(Board currentBoard, Board previousBoard, int numOfMoves) {
+            this.currentBoard = currentBoard;
+            this.previousBoard = previousBoard;
+            this.numOfMoves = numOfMoves;
+        }
+    }
 }

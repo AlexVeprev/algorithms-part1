@@ -71,21 +71,21 @@ public class Board {
     }
 
     public Board twin() {
-        int rand1 = StdRandom.uniform(dim * dim);
-        int rand2 = StdRandom.uniform(dim * dim - 1);
-
-        if (rand1 == rand2)
-            rand2 = dim * dim - 1;
-
         Board twin = new Board(board);
+        boolean swapped = false;
 
-        int j1 = rand1 % dim;
-        int i1 = (rand1 - j1) / dim;
-        int j2 = rand2 % dim;
-        int i2 = (rand2 - j2) / dim;
-
-        twin.board[i1][j1] = board[i2][j2];
-        twin.board[i2][j2] = board[i1][j1];
+        int i = 0;
+        while (!swapped && i < dim) {
+            for (int j = 0; j < dim - 1; j++) {
+                if (board[i][j] != 0 && board[i][j + 1] != 0) {
+                    twin.board[i][j] = board[i][j + 1];
+                    twin.board[i][j + 1] = board[i][j];
+                    swapped = true;
+                    break;
+                }
+            }
+            i++;
+        }
 
         return twin;
     }
