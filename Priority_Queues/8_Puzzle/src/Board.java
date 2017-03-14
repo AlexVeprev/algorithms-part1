@@ -1,16 +1,26 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
     private final int[][] board;
     private final int dim;
+    private int emptyI;
+    private int emptyJ;
 
     public Board(int[][] blocks) {
         dim = blocks.length;
         board = new int[dim][dim];
 
         for (int i = 0; i < dim; i++)
-            for (int j = 0; j < dim; j++)
+            for (int j = 0; j < dim; j++) {
                 board[i][j] = blocks[i][j];
+                if (board[i][j] == 0) {
+                    emptyI = i;
+                    emptyJ = j;
+                }
+            }
     }
 
     public int dimension() {
@@ -100,11 +110,41 @@ public class Board {
 
         return true;
     }
-    /*
+
     public Iterable<Board> neighbors() {
-        // all neighboring boards
+        List<Board> neighbors = new ArrayList<Board>();
+        Board neighbor;
+
+        if (emptyI > 0) {
+            neighbor = new Board(board);
+            neighbor.board[emptyI][emptyJ] = board[emptyI - 1][emptyJ];
+            neighbor.board[emptyI - 1][emptyJ] = board[emptyI][emptyJ];
+            neighbors.add(neighbor);
+        }
+
+        if (emptyI < dim - 1) {
+            neighbor = new Board(board);
+            neighbor.board[emptyI][emptyJ] = board[emptyI + 1][emptyJ];
+            neighbor.board[emptyI + 1][emptyJ] = board[emptyI][emptyJ];
+            neighbors.add(neighbor);
+        }
+
+        if (emptyJ > 0) {
+            neighbor = new Board(board);
+            neighbor.board[emptyI][emptyJ] = board[emptyI][emptyJ - 1];
+            neighbor.board[emptyI][emptyJ - 1] = board[emptyI][emptyJ];
+            neighbors.add(neighbor);
+        }
+
+        if (emptyJ < dim - 1) {
+            neighbor = new Board(board);
+            neighbor.board[emptyI][emptyJ] = board[emptyI][emptyJ + 1];
+            neighbor.board[emptyI][emptyJ + 1] = board[emptyI][emptyJ];
+            neighbors.add(neighbor);
+        }
+
+        return neighbors;
     }
-     */
 
     @Override
     public String toString() {
@@ -132,16 +172,16 @@ public class Board {
 
         Board b3 = new Board(new int[][] {
             {1, 2, 3},
-            {6, 5, 4},
-            {7, 8, 0}});
+            {6, 0, 4},
+            {7, 8, 5}});
 
         System.out.println("b1.hamming() == 0: " + (b1.hamming() == 0));
         System.out.println("b2.hamming() == 8: " + (b2.hamming() == 8));
-        System.out.println("b3.hamming() == 2: " + (b3.hamming() == 2));
+        System.out.println("b3.hamming() == 3: " + (b3.hamming() == 3));
 
         System.out.println("b1.manhattan() == 0:  " + (b1.manhattan() == 0));
         System.out.println("b2.manhattan() == 16: " + (b2.manhattan() == 16));
-        System.out.println("b3.manhattan() == 4:  " + (b3.manhattan() == 4));
+        System.out.println("b3.manhattan() == 6:  " + (b3.manhattan() == 6));
 
         System.out.println("b1.isGoal() == true:  " + (b1.isGoal() == true));
         System.out.println("b2.isGoal() == false: " + (b2.isGoal() == false));
@@ -161,5 +201,15 @@ public class Board {
         System.out.println("b1.twin()\n" + b1.twin());
         System.out.println("b2.twin()\n" + b2.twin());
         System.out.println("b3.twin()\n" + b3.twin());
+
+        System.out.println("\nb1.neighbors():");
+        for (Board n : b1.neighbors()) {
+            System.out.println(n);
+        }
+
+        System.out.println("\nb3.neighbors():");
+        for (Board n : b3.neighbors()) {
+            System.out.println(n);
+        }
     }
 }
