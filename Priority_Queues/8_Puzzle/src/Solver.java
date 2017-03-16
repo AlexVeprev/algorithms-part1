@@ -1,4 +1,3 @@
-import java.util.Comparator;
 import java.util.LinkedList;
 
 import edu.princeton.cs.algs4.MinPQ;
@@ -12,8 +11,8 @@ public class Solver {
         if (initial == null)
             throw new NullPointerException("initial == null");
 
-        MinPQ<Node> minPQ = new MinPQ<Node>(manhattanOrder());
-        MinPQ<Node> twinMinPQ = new MinPQ<Node>(manhattanOrder());
+        MinPQ<Node> minPQ = new MinPQ<Node>();
+        MinPQ<Node> twinMinPQ = new MinPQ<Node>();
 
         Node node = new Node(initial, null, 0);
         Node twinNode = new Node(initial.twin(), null, 0);
@@ -68,7 +67,7 @@ public class Solver {
         return solution;
     }
 
-    private class Node {
+    private class Node implements Comparable<Node> {
         private final Board board;
         private final Node prev;
         private final int numOfMoves;
@@ -78,27 +77,10 @@ public class Solver {
             this.prev = prev;
             this.numOfMoves = numOfMoves;
         }
-    }
 
-    private Comparator<Node> manhattanOrder() {
-        return new ManhattanOrder();
-    }
-
-    private class ManhattanOrder implements Comparator<Node> {
         @Override
-        public int compare(Node n1, Node n2) {
-            int prio1 = n1.board.manhattan() + n1.numOfMoves;
-            int prio2 = n2.board.manhattan() + n2.numOfMoves;
-
-            if (prio1 < prio2) {
-                return -1;
-            }
-
-            if (prio1 > prio2) {
-                return 1;
-            }
-
-            return 0;
+        public int compareTo(Node that) {
+            return board.manhattan() + numOfMoves - that.board.manhattan() - that.numOfMoves;
         }
     }
 
