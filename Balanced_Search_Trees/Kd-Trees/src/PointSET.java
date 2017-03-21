@@ -1,14 +1,14 @@
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.SET;
 
 public class PointSET {
-    private TreeSet<Point2D> points = null;
+    private SET<Point2D> points = null;
 
     public PointSET() {
-        points = new TreeSet<Point2D>();
+        points = new SET<Point2D>();
     }
 
     public boolean isEmpty() {
@@ -65,10 +65,10 @@ public class PointSET {
         if (isEmpty())
             return null;
 
-        Point2D nearest = points.first();
+        Point2D nearest = points.max();
 
         for (Point2D point : points)
-            if (p.distanceTo(point) < p.distanceTo(nearest))
+            if (p.distanceSquaredTo(point) < p.distanceSquaredTo(nearest))
                 nearest = point;
 
         return nearest;
