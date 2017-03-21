@@ -23,22 +23,19 @@ public class PointSET {
         if (p == null)
             throw new NullPointerException();
 
-        points.add(new Point2D(p.x(), p.y()));
+        points.add(p);
     }
 
     public boolean contains(Point2D p) {
         if (p == null)
             throw new NullPointerException();
 
-        for (Point2D point : points)
-            if (p.equals(point))
-                return true;
-
-        return false;
+        return points.contains(p);
     }
 
     public void draw() {
-        for (Point2D p : points) p.draw();
+        for (Point2D p : points)
+            p.draw();
     }
 
     public Iterable<Point2D> range(RectHV rect) {
