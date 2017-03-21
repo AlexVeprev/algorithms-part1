@@ -1,10 +1,12 @@
+import java.util.ArrayList;
+
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
     private int size = 0;
-    Node root = null;
+    private Node root = null;
 
     public KdTree() {
 
@@ -19,16 +21,22 @@ public class KdTree {
     }
 
     public void insert(Point2D p) {
+        if (p == null)
+            throw new NullPointerException();
+
         root = insert(root, p, true, new RectHV(0.0, 0.0, 1.0, 1.0));
-        size++;
     }
 
     private Node insert(Node n, Point2D p, boolean vertical, RectHV rect) {
         if (n == null) {
+            size++;
             n = new Node(p);
             n.rect = rect;
             return n;
         }
+
+        if (p.equals(n.p))
+            return n;
 
         if (vertical) {
             if (p.x() > n.p.x())
@@ -45,11 +53,27 @@ public class KdTree {
 
         return n;
     }
-    /*
+
     public boolean contains(Point2D p) {
-        // does the set contain point p?
+        if (p == null)
+            throw new NullPointerException();
+
+        return contains(p, root, true) != null;
     }
-     */
+
+    private Node contains(Point2D p, Node n, boolean vertical) {
+        if (n == null)
+            return null;
+
+        if (n.p.equals(p))
+            return n;
+
+        if (vertical && p.x() < n.p.x() || !vertical && p.y() < n.p.y())
+            return contains(p, n.lb, !vertical);
+        else
+            return contains(p, n.rt, !vertical);
+    }
+
     public void draw() {
         draw(root, true);
     }
@@ -80,15 +104,69 @@ public class KdTree {
         draw(n.lb, !vertical);
         draw(n.rt, !vertical);
     }
-    /*
+
     public Iterable<Point2D> range(RectHV rect) {
-        // all points that are inside the rectangle
+        if (rect == null)
+            throw new NullPointerException();
+
+        ArrayList<Point2D> range = new ArrayList<Point2D>();
+
+        range(rect, root, true, range);
+
+        return range;
+    }
+
+    private void range(RectHV rect, Node n, boolean vertical, ArrayList<Point2D> range) {
+        if (n.rt != null && n.rt.rect.intersects(rect))
+            range(rect, n.rt, !vertical, range);
+
+        if (n.lb != null && n.lb.rect.intersects(rect))
+            range(rect, n.lb, !vertical, range);
+
+        if (rect.contains(n.p))
+            range.add(n.p);
     }
 
     public Point2D nearest(Point2D p) {
-        // a nearest neighbor in the set to point p; null if the set is empty
+        if (p == null)
+            throw new NullPointerException();
+
+        if (size() == 0)
+            return null;
+
+        return nearest(p, root, true);
     }
-     */
+
+    private Point2D nearest(Point2D p, Node n, boolean vertical) {
+        if (n == null)
+            return null;
+
+        Point2D nearest = n.p;
+
+        Point2D candidat;
+        Node oppositeNode = null;
+        if (vertical && p.x() < n.p.x() || !vertical && p.y() < n.p.y()) {
+            candidat = nearest(p, n.lb, !vertical);
+            oppositeNode = n.rt;
+        }
+        else {
+            candidat = nearest(p, n.rt, !vertical);
+            oppositeNode = n.lb;
+        }
+
+        if (candidat != null && candidat.distanceSquaredTo(p) < nearest.distanceSquaredTo(p))
+            nearest = candidat;
+
+        if (oppositeNode != null && oppositeNode.rect.distanceSquaredTo(p) < nearest.distanceSquaredTo(p))
+            candidat = nearest(p, oppositeNode, !vertical);
+
+        if (candidat != null && candidat.distanceSquaredTo(p) < nearest.distanceSquaredTo(p))
+            nearest = candidat;
+
+        return nearest;
+
+    }
+
     private static class Node {
         private Point2D p;      // the point
         private RectHV rect;    // the axis-aligned rectangle corresponding to this node
@@ -104,8 +182,15 @@ public class KdTree {
         KdTree kt = new KdTree();
 
         kt.insert(new Point2D(0.5, 0.5));
+        kt.insert(new Point2D(0.5, 0.5));
         kt.insert(new Point2D(0.75, 0.25));
         kt.insert(new Point2D(0.25, 0.75));
         kt.insert(new Point2D(0.25, 0.25));
+        System.out.println(kt.size());
+
+        System.out.println(kt.contains(new Point2D(0.5, 0.5)));
+        System.out.println(kt.contains(new Point2D(0.25, 0.75)));
+        System.out.println(kt.contains(new Point2D(0.75, 0.25)));
+        System.out.println(kt.contains(new Point2D(0.75, 0.75)));
     }
 }
