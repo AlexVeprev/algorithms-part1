@@ -24,14 +24,14 @@ public class KdTree {
         if (p == null)
             throw new NullPointerException();
 
-        root = insert(root, p, true, new RectHV(0.0, 0.0, 1.0, 1.0));
+        root = insert(root, p, true, 0.0, 0.0, 1.0, 1.0);
     }
 
-    private Node insert(Node n, Point2D p, boolean vertical, RectHV rect) {
+    private Node insert(Node n, Point2D p, boolean vertical, double xmin, double ymin, double xmax, double ymax) {
         if (n == null) {
             size++;
             n = new Node(p);
-            n.rect = rect;
+            n.rect = new RectHV(xmin, ymin, xmax, ymax);
             return n;
         }
 
@@ -40,15 +40,15 @@ public class KdTree {
 
         if (vertical) {
             if (p.x() > n.p.x())
-                n.rt = insert(n.rt, p, !vertical, new RectHV(n.p.x(), n.rect.ymin(), n.rect.xmax(), n.rect.ymax()));
+                n.rt = insert(n.rt, p, !vertical, n.p.x(), n.rect.ymin(), n.rect.xmax(), n.rect.ymax());
             else
-                n.lb = insert(n.lb, p, !vertical, new RectHV(n.rect.xmin(), n.rect.ymin(), n.p.x(), n.rect.ymax()));
+                n.lb = insert(n.lb, p, !vertical, n.rect.xmin(), n.rect.ymin(), n.p.x(), n.rect.ymax());
         }
         else {
             if (p.y() > n.p.y())
-                n.rt = insert(n.rt, p, !vertical, new RectHV(n.rect.xmin(), n.p.y(), n.rect.xmax(), n.rect.ymax()));
+                n.rt = insert(n.rt, p, !vertical, n.rect.xmin(), n.p.y(), n.rect.xmax(), n.rect.ymax());
             else
-                n.lb = insert(n.lb, p, !vertical, new RectHV(n.rect.xmin(), n.rect.ymin(), n.rect.xmax(), n.p.y()));
+                n.lb = insert(n.lb, p, !vertical, n.rect.xmin(), n.rect.ymin(), n.rect.xmax(), n.p.y());
         }
 
         return n;
