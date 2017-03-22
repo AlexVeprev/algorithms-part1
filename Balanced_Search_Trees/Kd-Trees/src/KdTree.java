@@ -58,20 +58,20 @@ public class KdTree {
         if (p == null)
             throw new NullPointerException();
 
-        return contains(p, root, true) != null;
+        return contains(p, root, true);
     }
 
-    private Node contains(Point2D p, Node n, boolean vertical) {
+    private boolean contains(Point2D p, Node n, boolean vertical) {
         if (n == null)
-            return null;
+            return false;
 
         if (n.p.equals(p))
-            return n;
+            return true;
 
-        if (vertical && p.x() < n.p.x() || !vertical && p.y() < n.p.y())
-            return contains(p, n.lb, !vertical);
-        else
+        if (vertical && p.x() > n.p.x() || !vertical && p.y() > n.p.y())
             return contains(p, n.rt, !vertical);
+        else
+            return contains(p, n.lb, !vertical);
     }
 
     public void draw() {
@@ -111,7 +111,8 @@ public class KdTree {
 
         ArrayList<Point2D> range = new ArrayList<Point2D>();
 
-        range(rect, root, true, range);
+        if (!isEmpty())
+            range(rect, root, true, range);
 
         return range;
     }
@@ -131,7 +132,7 @@ public class KdTree {
         if (p == null)
             throw new NullPointerException();
 
-        if (size() == 0)
+        if (isEmpty())
             return null;
 
         return nearest(p, root, true);
