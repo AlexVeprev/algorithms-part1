@@ -11,3 +11,6 @@ Book: [Algorithms, 4th Edition by Robert Sedgewick and Kevin Wayne](http://algs4
 3 | [**Collinear Points**](http://coursera.cs.princeton.edu/algs4/assignments/collinear.html) | [W3_Mergesort/Collinear_Points/src](https://github.com/AlexVeprev/algorithms-part1/tree/master/W3_Mergesort/Collinear_Points/src) | [100/100 (100.00%)](https://www.coursera.org/learn/algorithms-part1/programming/prXiW/collinear-points/submission) |  -
 4 | [**8 Puzzle**](http://coursera.cs.princeton.edu/algs4/assignments/8puzzle.html) | [W4_Priority_Queues/8_Puzzle/src](https://github.com/AlexVeprev/algorithms-part1/tree/master/W4_Priority_Queues/8_Puzzle/src) | [100/100 (100.00%)](https://www.coursera.org/learn/algorithms-part1/programming/iqOQi/8-puzzle/submission) |  -
 5 | [**Kd-Trees**](http://coursera.cs.princeton.edu/algs4/assignments/kdtree.html) | [W5_Balanced_Search_Trees/Kd-Trees/src](https://github.com/AlexVeprev/algorithms-part1/tree/master/W5_Balanced_Search_Trees/Kd-Trees/src) | [100/100 (100.00%)](https://www.coursera.org/learn/algorithms-part1/programming/wuF0a/kd-trees/submission) |  -
+
+All these implementations use some classes from [algs4.jar](http://algs4.cs.princeton.edu/code/algs4.jar) package.
+See description of this package [here](http://algs4.cs.princeton.edu/code/).
